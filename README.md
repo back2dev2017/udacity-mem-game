@@ -16,6 +16,7 @@ Once all 16 boxes (8 matches) have been accomplished, you win.
 ## Instructions
 
 To install the game, the following files (with subfolder names if applicable) should be copied:
+
 	+ index.html
 		js/app.js
 		css/app.css
