@@ -142,19 +142,20 @@ nav a, button {
     cursor: pointer;
 }
 
-#gametimer {
+#timerbox {
     box-sizing: border-box;
     box-shadow: 6px 8px 10px 0 rgba(46, 61, 73, 0.5);
     border: 1px solid black;
     font-family: Arial, Helvetica, sans-serif;
     position: absolute;
     top: 10px;
-    left: 80%;
+    left: 70%;
     height: 22px;
     margin-right: 10px;
     padding: 2px 2px 2px 2px;
     text-align: center;
-    width: 15%;
+    width: 28%;
+    max-width: 195px;
     z-index: 500;
 }
 
@@ -243,6 +244,14 @@ nav a, button {
     #win-msg {
         font-size: 1.1em;
     }
+    #timerbox {
+        font-size: 0.9em;
+        position: absolute;
+        top: 2px;
+        left: 68%;
+        height: 20px;
+        width: 31%;
+    }
 }
   
 @media (min-width: 490px) and (max-width: 679px) {
@@ -266,6 +275,14 @@ nav a, button {
     #win-msg {
         font-size: 1.5em;
     }
+    #timerbox {
+        font-size: 1em;
+        position: absolute;
+        top: 10px;
+        left: 70%;
+        height: 22px;
+        width: 29%;
+    }
 
 }
 @media screen and (min-width: 680px) {
@@ -288,6 +305,14 @@ nav a, button {
     }
     #win-msg {
         font-size: 1.9em;
+    }
+    #timerbox {
+        font-size: 1em;
+        position: absolute;
+        top: 10px;
+        left: 70%;
+        height: 22px;
+        width: 28%;
     }
 }
 

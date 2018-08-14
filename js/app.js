@@ -63,14 +63,14 @@ function appSetup() {
 
 function shuffleCards() {
     //   Note: the shuffleCards() function is basically a "reset" of the game. so re-initialize things accordingly
-    
+
     // reset the stars and the number of moves
     document.getElementById("moves").innerText = "0";
     document.getElementById("starlist").innerHTML = starshtml;
 
     // make sure and hide the win message and the game timer in case they just won a game
     document.getElementById("win-msg").classList.add("hidden");
-    document.getElementById("gametimer").classList.add("hidden");
+    document.getElementById("timerbox").innerText = 'Time: 0 secs';
 
     //   the way to shuffle the deck is to change the sortvals, sort the deck on that sortval, then, step through the array, 
     // adding the 'cards' into the "deck" element with appropriate classes assigned
@@ -108,8 +108,8 @@ function cardClick (evnt) {
         // wait for the cards to be unflipped so they don't get penalized for extra clicks
     } else {
         let tmp = evnt.target;
-        setStarsAndCounter();
         if (tmp.classList.contains("card")) {
+            setStarsAndCounter();
             // show the card, but then the code below will take care of re-hiding it if needed
             let selcard = document.getElementById(tmp.id);
             selcard.classList.add("show");
@@ -140,21 +140,23 @@ function setStarsAndCounter() {
     // WARNING: setting the number of stars using the removeChild() is a "brittle" design. I am going to remove a star based on an "exact"
     // click count. This means if a click event is missed for whatever reason, the star count could be off.
     switch (numClicks) {
-        case 1:
-            // on the first card click, "start" the timer (aka, record the start time)
-            gameStart = performance.now()
-            document.getElementById("gametimer").classList.remove("hidden");
-            gametimer = setInterval(updateGameTime, 1000)
-            break;
         case 36:
             document.getElementById("starlist").removeChild(document.getElementById("starlist").firstElementChild);
             break;
         case 70: 
             document.getElementById("starlist").removeChild(document.getElementById("starlist").firstElementChild);
             break;
+        case 0:
+            // on the first card click, "start" the timer (aka, record the start time)
+            gameStart = performance.now();
+            document.getElementById("timerbox").classList.remove("hidden");
+            tmref = setInterval(updateGameTime, 1000);
+            break;
         default:
     }
-    countclick.innerText = Number(countclick.innerText) + 1;
+    numClicks++;
+    countclick.innerText = numClicks;
+
 }
 
 function gotMatches() {
@@ -168,7 +170,7 @@ function gotMatches() {
     // check to see if all the cards have been matched ("match" class is on 16 elements) - if so, show the win message
     if (document.getElementsByClassName("match").length >= 16) {
         // they won, stop the timer and show the win message
-        clearInterval(gametimer);
+        clearInterval(tmref);
         showWinMessage();
     } else {
         document.getElementById("match-msg").classList.remove("hidden");
@@ -189,6 +191,7 @@ function unFlipCards() {
 }
 
 function showWinMessage() {
+    document.getElementById("timerbox").classList.add("hidden");
     gameEnd = performance.now();
     let gameTime = Math.floor((gameEnd - gameStart)/1000);
     document.getElementById("fintime").innerText = gameTime;
@@ -198,6 +201,5 @@ function showWinMessage() {
 }
 
 function updateGameTime() {
-    let nowtime = Math.floor((performance.now() - gameStart)/1000);
-    document.getElementById("gametimer").innerText = nowtime.toString + ' seconds elapsed';
+    document.getElementById("timerbox").innerText = "Time: " + Math.floor((performance.now() - gameStart)/1000) + ' secs';
 }
