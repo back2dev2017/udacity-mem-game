@@ -37,7 +37,10 @@ nav a, button {
     min-height: 48px;
     min-width: 48px;
   }
- 
+
+#mainhd {
+    font-weight: bold;
+}
 
 /*
  * Styles for the deck of cards
@@ -79,14 +82,37 @@ nav a, button {
 
 .deck .card.show {
     font-size: 33px;
+    animation-name: cardshake;
+    animation-duration: 1s;
+}
+
+@keyframes cardshake {
+    0% {
+        transform: rotate(-10deg);
+    }
+    20% {
+        transform: rotate(10deg);
+    }
+    40% {
+        transform: rotate(-10deg);
+    }
+    60% {
+        transform: rotate(10deg);
+    }
+    80% {
+        transform: rotate(-10deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
 }
 
 .deck .card.match {
     cursor: default;
     background: #55cc55;
     font-size: 33px;
-    animation: shake 1s cubic-bezier(.36,.07,.19,.97) both;
-    transform: translate3d(0,0,0);
+    /* animation: shake 1s cubic-bezier(.36,.07,.19,.97) both;
+    transform: translate3d(0,0,0); */
 }
 
 /*
@@ -121,6 +147,7 @@ nav a, button {
     background-color: #fff;
     box-sizing: border-box;
     box-shadow: 0 10px 10px rgba(0, 0, 0, 0.26);
+    border-radius: 10px;
     font-size: 4em;
     font-weight: bold;
     color: #2a2;
@@ -129,11 +156,10 @@ nav a, button {
     position: absolute;
     text-align: center;
     top: 20%;
-    width: 50%;
-    z-index: 1000;
+    width: 70%;
+    z-index: 2000;
     animation-name: matched;
     animation-duration: 1.5s;
-
 }
 
 @keyframes matched {
@@ -163,6 +189,89 @@ nav a, button {
     }
     100% {
         background-color: #fff;
+    }
+}
+
+#win-msg {
+    background: radial-gradient(white, rgb(168,255,128));
+    box-sizing: border-box;
+    box-shadow: 0 10px 10px rgba(0, 0, 255, .25);
+    border-radius: 10px;
+    font-size: 2em;
+    height: 60%;
+    text-align: center;
+    position: absolute;
+    width: 75%;
+    max-width: 600px;
+    z-index: 1000;
+}
+
+@media (max-width: 489px) {
+    .score-panel {
+        font-size: 20px;
+    }
+    .deck {
+        width: 350px;
+        min-height: 400px;
+    }
+    .deck .card {
+        height: 65px;
+        width: 65px;
+    }
+    #mainhd {
+        font-size: 25px;
+    }
+    #match-msg {
+        font-size: 2em;
+    }
+    #win-msg {
+        font-size: 1.1em;
+    }
+}
+  
+@media (min-width: 490px) and (max-width: 679px) {
+    .score-panel {
+        font-size: 25px;
+    }
+    .deck {
+        width: 500px;
+        min-height: 550px;
+    }
+    .deck .card {
+        height: 100px;
+        width: 100px;
+    }
+    #mainhd {
+        font-size: 25px;
+    }
+    #match-msg {
+        font-size: 2.5em;
+    }
+    #win-msg {
+        font-size: 1.5em;
+    }
+
+}
+@media screen and (min-width: 680px) {
+    .score-panel {
+      font-size: 20px;
+    }
+    .deck {
+        width: 660px;
+        min-height: 680px;
+    }
+    .deck .card {
+        height: 125px;
+        width: 125px;
+    }
+    #mainhd {
+        font-size: 25px;
+    }
+    #match-msg {
+        font-size: 4em;
+    }
+    #win-msg {
+        font-size: 1.9em;
     }
 }
 

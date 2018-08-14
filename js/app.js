@@ -2,6 +2,29 @@
  * Create a list that holds all of your cards
  */
 
+/*
+ * Basically, the design concept is
+ *  - use an array to set up the initial "cards"
+ *  - use a property of that array to store random numbers to be used to sort (essentially yields random sorting)
+ *  - use a listener for a click, reveal the card (show pick, change bg, etc) (only concerned about clicks on a "card" class element)
+ *    + when revealed, if no other card revealed, leave as-is
+ *       * if other card showing, check for match and if they do, change both cards to "match" class (locks them in place)
+ *       * but if not matching, unflip the cards (hide the pic/symbol, etc)
+ *    + every click on a card increments a counter and displays. Also, star rating goes down after 36 clicks and again after 70 clicks
+ *    + When all cards get matched (all 16 have "match" class), display "win" message with stats
+ *    + a "reset" of game (click reset button) reshuffles cards, clears timer, sets star rating to original, etc
+ */
+
+// TODO: remove various testing support code (it is mostly commented out now - leaving it in for project evaluation at the moment)
+// TODO: trap keystrokes for reload, perhaps copying winning message (stats)
+// TODO: timer - showing elapsed time (aka, use setInterval() to update..., stop updating when wins or resets game, etc)
+// TODO: input for name, save results to local storage (nothing in course about that up to this point)
+// TODO: top 3 leaderboard (by name: minimum moves basis) - requires above item (local storage)
+// TODO: there is no protection from cheating in the game (aka can use console to view hidden content). a server-side card position
+//       and match check, etc would protect against this
+// TODO: hook this up to a server database to get card info (could then do custom pictures, custom deckface, user stats, etc)
+
+
 function appSetup() {
     // initialize the so-called card deck. this could have been done in the main index.html file, but I prefer
     // having a setup function. That way, it is available to call at any given time in other code without
@@ -29,12 +52,25 @@ function appSetup() {
     // it is a "match" game after all. Also, this could be hooked up to a database of objects (pictures), etc and therefore
     // only needing to specify one picture that would then be duplicated for a match would be more useable/flexible
 
+    // grab the HTML of the "starlist" (aka the star rating). Doing it this way makes it easy to reset later, and don't have to
+    // worry about changing code: e.g. if we decide later for total of 4, 5, or 10 stars, this will catch it
+    starshtml = document.getElementById("starlist").innerHTML;
     shuffleCards();
     setupListeners();
-    console.log('finished appsetup');
+    
+    // console.log('finished appsetup');
 }
 
 function shuffleCards() {
+    //   Note: the shuffleCards() function is basically a "reset" of the game. so re-initialize things accordingly
+    
+    // reset the stars and the number of moves
+    document.getElementById("moves").innerText = "0";
+    document.getElementById("starlist").innerHTML = starshtml;
+
+    // make sure and hide the win message in case they just won a game
+    document.getElementById("win-msg").classList.add("hidden");
+
     //   the way to shuffle the deck is to change the sortvals, sort the deck on that sortval, then, step through the array, 
     // adding the 'cards' into the "deck" element with appropriate classes assigned
     cardObjects.forEach( function(arritem) {
@@ -58,8 +94,6 @@ function shuffleCards() {
     // note: would be much better to have and "ID" on the deck element because there is only 1 deck in the page, but whatever...
     let tmpdeck = document.getElementsByClassName("deck");
     tmpdeck[0].innerHTML = tmpstr;
-    // reset the stars and the number of moves
-    document.getElementById("moves").innerText = "0";
 }
 
 function setupListeners() {
@@ -70,11 +104,10 @@ function setupListeners() {
 function cardClick (evnt) {
     // if the user is being shown cards that don't match, do not do anything. they will unflip in a few secs
     if (showingCards == true) {
-        // wait for the cards to be unflipped
+        // wait for the cards to be unflipped so they don't get penalized for extra clicks
     } else {
         let tmp = evnt.target;
-        let countclick = document.getElementById("moves");
-        countclick.innerText = Number(countclick.innerText) + 1;
+        setStarsAndCounter();
         if (tmp.classList.contains("card")) {
             // show the card, but then the code below will take care of re-hiding it if needed
             let selcard = document.getElementById(tmp.id);
@@ -94,45 +127,69 @@ function cardClick (evnt) {
                     gotMatches();
                 } else {
                     showingCards = true;
-                    console.log('show unflip cards');
+                    // console.log('show unflip cards');
                     setTimeout(function() { unFlipCards(); }, 2000);
                 }
             }
         } //end of check for card click
     } // end of checking showingCards
-    
 }
 
-/*
- * set up the event listener for a card. If a card is clicked:
- *  - display the card's symbol (put this functionality in another function that you call from this one)
- *  - add the card to a *list* of "open" cards (put this functionality in another function that you call from this one)
- *  - if the list already has another card, check to see if the two cards match
- *    + if the cards do match, lock the cards in the open position (put this functionality in another function that you call from this one)
- *    + if the cards do not match, remove the cards from the list and hide the card's symbol (put this functionality in another function that you call from this one)
- *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
- *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
- */
+function setStarsAndCounter() {
+    let countclick = document.getElementById("moves");
+    let numClicks = Number(countclick.innerText);
+    // WARNING: setting the number of stars using the removeChild() is a "brittle" design. I am going to remove a star based on an "exact"
+    // click count. This means if a click event is missed for whatever reason, the star count could be off.
+    switch (numClicks) {
+        case 1:
+            // on the first card click, start the timer
+            gameStart = performance.now()
+            break;
+        case 36:
+            document.getElementById("starlist").removeChild(document.getElementById("starlist").firstElementChild);
+            break;
+        case 70: 
+            document.getElementById("starlist").removeChild(document.getElementById("starlist").firstElementChild);
+            break;
+        default:
+    }
+    countclick.innerText = Number(countclick.innerText) + 1;
+}
 
 function gotMatches() {
-    //   basically, there are now 2 card items that have the 'open' class assigned to them. so, add the match class to those, taking off
-    // the show and open classes
+    //   the user got a match, now there are 2 "card" items that have the 'open' class assigned to them. so, add the "match" class to those, taking off
+    // the open class
     let cards2Work = document.getElementsByClassName("open");
     for (let i = cards2Work.length - 1; i >= 0; i--) {
         cards2Work[i].classList.add("match");
         cards2Work[i].classList.remove("open");
     }
-    document.getElementById("match-msg").classList.remove("hidden");
-    setTimeout(function() {document.getElementById("match-msg").classList.add("hidden");}, 2000);
+    // check to see if all the cards have been matched ("match" class is on 16 elements) - if so, show the win message
+    if (document.getElementsByClassName("match").length >= 16) {
+        showWinMessage()
+    } else {
+        document.getElementById("match-msg").classList.remove("hidden");
+        setTimeout(function() {document.getElementById("match-msg").classList.add("hidden");}, 2000);
+    }
 }
 
 function unFlipCards() {
+    // they did not get a match, so 'unflip' the cards: aka remove the show and open classes
     let unflip = document.getElementsByClassName("open");
     let numitems = unflip.length;
-    console.log('num elements: ' + numitems);
+    // console.log('num elements: ' + numitems);
     for (let ix = numitems - 1; ix >= 0; ix-- ) {
         unflip.item(0).classList.remove("show");
         unflip.item(0).classList.remove("open");
     }
     showingCards = false;
+}
+
+function showWinMessage() {
+    gameEnd = performance.now();
+    let gameTime = Math.floor((gameEnd - gameStart)/1000);
+    document.getElementById("fintime").innerText = gameTime;
+    document.getElementById("finmoves").innerText = document.getElementById("moves").innerText;
+    document.getElementById("finstars").innerText = document.getElementById("starlist").children.length;
+    document.getElementById("win-msg").classList.remove("hidden");
 }
