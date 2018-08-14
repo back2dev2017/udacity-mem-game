@@ -31,22 +31,22 @@ function appSetup() {
     // forcing a "refresh" of the page
 
     // set the 16 cards - because the other 8 are going to essentially be "copies"
-    cardObjects[0] = {cardid: 1, specClass: "fa-diamond", flipped: false, locked: false, sortVal: 0}
-    cardObjects[1] = {cardid: 2, specClass: "fa-paper-plane-o", flipped: false, locked: false, sortVal: 0}
-    cardObjects[2] = {cardid: 3, specClass: "fa-anchor", flipped: false, locked: false, sortVal: 0}
-    cardObjects[3] = {cardid: 4, specClass: "fa-bolt", flipped: false, locked: false, sortVal: 0}
-    cardObjects[4] = {cardid: 5, specClass: "fa-cube", flipped: false, locked: false, sortVal: 0}
-    cardObjects[5] = {cardid: 6, specClass: "fa-leaf", flipped: false, locked: false, sortVal: 0}
-    cardObjects[6] = {cardid: 7, specClass: "fa-bicycle", flipped: false, locked: false, sortVal: 0}
-    cardObjects[7] = {cardid: 8, specClass: "fa-bomb", flipped: false, locked: false, sortVal: 0}
-    cardObjects[8] = {cardid: 9, specClass: "fa-diamond", flipped: false, locked: false, sortVal: 0}
-    cardObjects[9] = {cardid: 10, specClass: "fa-paper-plane-o", flipped: false, locked: false, sortVal: 0}
-    cardObjects[10] = {cardid: 11, specClass: "fa-anchor", flipped: false, locked: false, sortVal: 0}
-    cardObjects[11] = {cardid: 12, specClass: "fa-bolt", flipped: false, locked: false, sortVal: 0}
-    cardObjects[12] = {cardid: 13, specClass: "fa-cube", flipped: false, locked: false, sortVal: 0}
-    cardObjects[13] = {cardid: 14, specClass: "fa-leaf", flipped: false, locked: false, sortVal: 0}
-    cardObjects[14] = {cardid: 15, specClass: "fa-bicycle", flipped: false, locked: false, sortVal: 0}
-    cardObjects[15] = {cardid: 16, specClass: "fa-bomb", flipped: false, locked: false, sortVal: 0}
+    cardObjects[0] = {cardid: 1, specClass: "fa-diamond", flipped: false, locked: false, sortVal: 0};
+    cardObjects[1] = {cardid: 2, specClass: "fa-paper-plane-o", flipped: false, locked: false, sortVal: 0};
+    cardObjects[2] = {cardid: 3, specClass: "fa-anchor", flipped: false, locked: false, sortVal: 0};
+    cardObjects[3] = {cardid: 4, specClass: "fa-bolt", flipped: false, locked: false, sortVal: 0};
+    cardObjects[4] = {cardid: 5, specClass: "fa-cube", flipped: false, locked: false, sortVal: 0};
+    cardObjects[5] = {cardid: 6, specClass: "fa-leaf", flipped: false, locked: false, sortVal: 0};
+    cardObjects[6] = {cardid: 7, specClass: "fa-bicycle", flipped: false, locked: false, sortVal: 0};
+    cardObjects[7] = {cardid: 8, specClass: "fa-bomb", flipped: false, locked: false, sortVal: 0};
+    cardObjects[8] = {cardid: 9, specClass: "fa-diamond", flipped: false, locked: false, sortVal: 0};
+    cardObjects[9] = {cardid: 10, specClass: "fa-paper-plane-o", flipped: false, locked: false, sortVal: 0};
+    cardObjects[10] = {cardid: 11, specClass: "fa-anchor", flipped: false, locked: false, sortVal: 0};
+    cardObjects[11] = {cardid: 12, specClass: "fa-bolt", flipped: false, locked: false, sortVal: 0};
+    cardObjects[12] = {cardid: 13, specClass: "fa-cube", flipped: false, locked: false, sortVal: 0};
+    cardObjects[13] = {cardid: 14, specClass: "fa-leaf", flipped: false, locked: false, sortVal: 0};
+    cardObjects[14] = {cardid: 15, specClass: "fa-bicycle", flipped: false, locked: false, sortVal: 0};
+    cardObjects[15] = {cardid: 16, specClass: "fa-bomb", flipped: false, locked: false, sortVal: 0};
 
     // TODO: set up initialization of array so that only half the cards have to be specificed. AKA, re-copy half to a 2nd half
     // it is a "match" game after all. Also, this could be hooked up to a database of objects (pictures), etc and therefore
@@ -68,15 +68,16 @@ function shuffleCards() {
     document.getElementById("moves").innerText = "0";
     document.getElementById("starlist").innerHTML = starshtml;
 
-    // make sure and hide the win message in case they just won a game
+    // make sure and hide the win message and the game timer in case they just won a game
     document.getElementById("win-msg").classList.add("hidden");
+    document.getElementById("gametimer").classList.add("hidden");
 
     //   the way to shuffle the deck is to change the sortvals, sort the deck on that sortval, then, step through the array, 
     // adding the 'cards' into the "deck" element with appropriate classes assigned
-    cardObjects.forEach( function(arritem) {
+    cardObjects.forEach(function (arritem) {
         arritem.sortVal = Math.floor((Math.random() * 1000));
     });
-    cardObjects.sort( function(comp1, comp2) {
+    cardObjects.sort(function (comp1, comp2) {
         // note the "sort" usually functions on "string" values. But a custom sorting function can be supplied. The main need
         // for the custom function is to return function of an array is supposed to return < 0, 0, or >0.
         return comp1.sortVal - comp2.sortVal;
@@ -87,7 +88,7 @@ function shuffleCards() {
     // seems that class assignment is what provides the "image" for the card (anchor, diamond, etc))
     //   also, will add a unique DOM id to each card - mainly for debugging (note: "card" is the containing <li>)
     let tmpstr = "";
-    cardObjects.forEach( function(arritem) {
+    cardObjects.forEach(function (arritem) {
         tmpstr = tmpstr + "<li class='card' id=cardid" + arritem.cardid + ">" +
                             "<i class='fa " + arritem.specClass + "'></i> </li>";
     });
@@ -126,7 +127,7 @@ function cardClick (evnt) {
                 } else {
                     showingCards = true;
                     // console.log('show unflip cards');
-                    setTimeout(function() { unFlipCards(); }, 2000);
+                    setTimeout(function () { unFlipCards(); }, 2000);
                 }
             }
         } //end of check for card click
@@ -142,6 +143,8 @@ function setStarsAndCounter() {
         case 1:
             // on the first card click, "start" the timer (aka, record the start time)
             gameStart = performance.now()
+            document.getElementById("gametimer").classList.remove("hidden");
+            gametimer = setInterval(updateGameTime, 1000)
             break;
         case 36:
             document.getElementById("starlist").removeChild(document.getElementById("starlist").firstElementChild);
@@ -164,10 +167,12 @@ function gotMatches() {
     }
     // check to see if all the cards have been matched ("match" class is on 16 elements) - if so, show the win message
     if (document.getElementsByClassName("match").length >= 16) {
-        showWinMessage()
+        // they won, stop the timer and show the win message
+        clearInterval(gametimer);
+        showWinMessage();
     } else {
         document.getElementById("match-msg").classList.remove("hidden");
-        setTimeout(function() {document.getElementById("match-msg").classList.add("hidden");}, 2000);
+        setTimeout(function () {document.getElementById("match-msg").classList.add("hidden");}, 2000);
     }
 }
 
@@ -190,4 +195,9 @@ function showWinMessage() {
     document.getElementById("finmoves").innerText = document.getElementById("moves").innerText;
     document.getElementById("finstars").innerText = document.getElementById("starlist").children.length;
     document.getElementById("win-msg").classList.remove("hidden");
+}
+
+function updateGameTime() {
+    let nowtime = Math.floor((performance.now() - gameStart)/1000);
+    document.getElementById("gametimer").innerText = nowtime.toString + ' seconds elapsed';
 }
