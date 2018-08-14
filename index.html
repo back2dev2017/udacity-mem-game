@@ -22,10 +22,10 @@
         		<li><i class="fa fa-star"></i></li>
         	</ul>
 
-        	<span class="moves">3</span> Moves
+        	<span id="moves" class="moveCount">3</span> Moves
 
             <div class="restart">
-        		<i class="fa fa-repeat"></i>
+        		<i class="fa fa-repeat" onclick="shuffleCards()"></i>
         	</div>
         </section>
 
@@ -79,8 +79,18 @@
                 <i class="fa fa-cube"></i>
             </li>
         </ul>
+        <div id="match-msg" class="hidden">
+            You got a match!
+        </div>
     </div>
 
     <script src="js/app.js"></script>
+    <script>
+        let cardObjects = [];
+        let checkList = [];
+        let showingCards = false;
+        appSetup();
+    </script>
+
 </body>
 </html>

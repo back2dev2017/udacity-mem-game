@@ -33,6 +33,12 @@ h1 {
     font-weight: 300;
 }
 
+nav a, button {
+    min-height: 48px;
+    min-width: 48px;
+  }
+ 
+
 /*
  * Styles for the deck of cards
  */
@@ -67,7 +73,7 @@ h1 {
 
 .deck .card.open {
     transform: rotateY(0);
-    background: #02b3e4;
+    background: #ddcc55;
     cursor: default;
 }
 
@@ -77,8 +83,10 @@ h1 {
 
 .deck .card.match {
     cursor: default;
-    background: #02ccba;
+    background: #55cc55;
     font-size: 33px;
+    animation: shake 1s cubic-bezier(.36,.07,.19,.97) both;
+    transform: translate3d(0,0,0);
 }
 
 /*
@@ -106,4 +114,58 @@ h1 {
 .score-panel .restart {
     float: right;
     cursor: pointer;
+}
+
+/* message for matching */
+#match-msg {
+    background-color: #fff;
+    box-sizing: border-box;
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.26);
+    font-size: 4em;
+    font-weight: bold;
+    color: #2a2;
+    margin-left: auto;
+    margin-right: auto;
+    position: absolute;
+    text-align: center;
+    top: 20%;
+    width: 50%;
+    z-index: 1000;
+    animation-name: matched;
+    animation-duration: 1.5s;
+
+}
+
+@keyframes matched {
+    0% {
+        background-color: #666;
+    }
+    10% {
+        background-color: #fff;
+    }
+    20% {
+        background-color: #777;
+    }
+    30% {
+        background-color: #fff;
+    }
+    40% {
+        background-color: #777;
+    }
+    50% {
+        background-color: #fff;
+    }
+    60% {
+        background-color: #888;
+    }
+    70% {
+        background-color: #fff;
+    }
+    100% {
+        background-color: #fff;
+    }
+}
+
+.hidden {
+    display: none;
 }
