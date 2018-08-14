@@ -115,9 +115,7 @@ function cardClick (evnt) {
             selcard.classList.add("open");
             let cardsShowing = document.getElementsByClassName("open");
             if (cardsShowing.length < 2) {
-                // only 1 card "open", so add the visible card
-                // checkList[0] = selcard.id;
-                // console.log(checkList[0]);
+                // only 1 card "open", so nothing to do, the card has been made visible
             } else {
                 // check for match, if not, flip cards back over. There should never be more than 2 cards turned over at a time
                 let card1 = cardsShowing[0].firstElementChild.classList.toString();
@@ -142,7 +140,7 @@ function setStarsAndCounter() {
     // click count. This means if a click event is missed for whatever reason, the star count could be off.
     switch (numClicks) {
         case 1:
-            // on the first card click, start the timer
+            // on the first card click, "start" the timer (aka, record the start time)
             gameStart = performance.now()
             break;
         case 36:
