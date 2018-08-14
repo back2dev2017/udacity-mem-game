@@ -34,9 +34,9 @@ As this particular page is for a Udacity Nano degree program, no contributions w
 
 ## Dependencies
 
-No dependencies for frameworks or libraries are required. Note, however, specific css files are referenced in the project:
-    https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css
-    https://fonts.googleapis.com/css?family=Coda
+No dependencies for frameworks or libraries are required. Note, however, specific css files are referenced in the project: <br />
+    https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css <br />
+    https://fonts.googleapis.com/css?family=Coda <br />
 
 
 ## References & Credits
