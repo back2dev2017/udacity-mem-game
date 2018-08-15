@@ -70,7 +70,7 @@ function shuffleCards() {
 
     // make sure and hide the win message and the game timer in case they just won a game
     document.getElementById("win-msg").classList.add("hidden");
-    document.getElementById("timerbox").innerText = 'Time: 0 secs';
+    document.getElementById("timerbox").classList.add("hidden");
 
     //   the way to shuffle the deck is to change the sortvals, sort the deck on that sortval, then, step through the array, 
     // adding the 'cards' into the "deck" element with appropriate classes assigned
@@ -89,8 +89,10 @@ function shuffleCards() {
     //   also, will add a unique DOM id to each card - mainly for debugging (note: "card" is the containing <li>)
     let tmpstr = "";
     cardObjects.forEach(function (arritem) {
-        tmpstr = tmpstr + "<li class='card' id=cardid" + arritem.cardid + ">" +
-                            "<i class='fa " + arritem.specClass + "'></i> </li>";
+        // as suggested by code reviewer from Udacity: template literals (definitely easier to see proper tag syntax/structure)
+        tmpstr = tmpstr + `<li class="card" id="cardid${arritem.cardid}">
+                                <i class="fa ${arritem.specClass}"></i>
+                            </li>`;
     });
     // note: would be much better to have and "ID" on the deck element because there is only 1 deck in the page, but whatever...
     let tmpdeck = document.getElementsByClassName("deck");
@@ -109,27 +111,34 @@ function cardClick (evnt) {
     } else {
         let tmp = evnt.target;
         if (tmp.classList.contains("card")) {
-            setStarsAndCounter();
-            // show the card, but then the code below will take care of re-hiding it if needed
-            let selcard = document.getElementById(tmp.id);
-            selcard.classList.add("show");
-            selcard.classList.add("open");
-            let cardsShowing = document.getElementsByClassName("open");
-            if (cardsShowing.length < 2) {
-                // only 1 card "open", so nothing to do, the card has been made visible
+            //   the Udacity code reviewer pointed out moves were still being counted if clicking on a "shown" card. Well... should
+            // the user be penalized for clicking on an already shown card? It wasn't in the specs... But we are "Agile" here so
+            // we will not penalize the user :)
+            if (tmp.classList.contains("open") || tmp.classList.contains("match") || tmp.classList.contains("show")) {
+                // they clicked on an already showing card
             } else {
-                // check for match, if not, flip cards back over. There should never be more than 2 cards turned over at a time
-                let card1 = cardsShowing[0].firstElementChild.classList.toString();
-                let card2 = cardsShowing[1].firstElementChild.classList.toString();
-                if (cardsShowing.length == 2 && (card1 == card2)) {
-                    // it matches, "lock it" so to speak and reset other things
-                    gotMatches();
+                setStarsAndCounter();
+                // show the card, but then the code below will take care of re-hiding it if needed
+                let selcard = document.getElementById(tmp.id);
+                selcard.classList.add("show");
+                selcard.classList.add("open");
+                let cardsShowing = document.getElementsByClassName("open");
+                if (cardsShowing.length < 2) {
+                    // only 1 card "open", so nothing to do, the card has been made visible
                 } else {
-                    showingCards = true;
-                    // console.log('show unflip cards');
-                    setTimeout(function () { unFlipCards(); }, 2000);
+                    // check for match, if not, flip cards back over. There should never be more than 2 cards turned over at a time
+                    let card1 = cardsShowing[0].firstElementChild.classList.toString();
+                    let card2 = cardsShowing[1].firstElementChild.classList.toString();
+                    if (cardsShowing.length == 2 && (card1 == card2)) {
+                        // it matches, "lock it" so to speak and reset other things
+                        gotMatches();
+                    } else {
+                        showingCards = true;
+                        // console.log('show unflip cards');
+                        setTimeout(function () { unFlipCards(); }, 2000);
+                    }
                 }
-            }
+            } // end of check if clicking on already shown card
         } //end of check for card click
     } // end of checking showingCards
 }
@@ -149,6 +158,7 @@ function setStarsAndCounter() {
         case 0:
             // on the first card click, "start" the timer (aka, record the start time)
             gameStart = performance.now();
+            document.getElementById("timerbox").innerText = 'Time: 0 secs';
             document.getElementById("timerbox").classList.remove("hidden");
             tmref = setInterval(updateGameTime, 1000);
             break;
@@ -201,5 +211,6 @@ function showWinMessage() {
 }
 
 function updateGameTime() {
-    document.getElementById("timerbox").innerText = "Time: " + Math.floor((performance.now() - gameStart)/1000) + ' secs';
+    // as suggested by code reviewer from Udacity (I combined 2 lines into one after I understood the suggestion)
+    document.getElementById("timerbox").innerText = `Time: ${Math.floor((performance.now() - gameStart)/1000)} secs`;
 }
